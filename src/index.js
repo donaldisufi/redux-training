@@ -2,12 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
+import './utils/api';
+import configureStore from './store/configureStore';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <>
+      <Provider store={configureStore()}>
+          <App />
+      </Provider>
+  </>,
   document.getElementById('root')
 );
 
