@@ -6,10 +6,11 @@ import fetchAsync from '../../../utils/fetchPromise';
 /**
  * Constants
  */
-const REQUEST = '@app/blogs/index/REQUEST';
-const SET_LIST = '@app/blogs/index/SET_LIST';
-const SET_IS_LOADING = '@app/blogs/index/SET_IS_LOADING';
-const SET_ERROR = '@app/blogs/index/SET_ERROR';
+export const REQUEST = '@app/blogs/index/REQUEST';
+export const SET_LIST = '@app/blogs/index/SET_LIST';
+export const SET_IS_LOADING = '@app/blogs/index/SET_IS_LOADING';
+export const SET_ERROR = '@app/blogs/index/SET_ERROR';
+export const REMOVE = '@app/blogs/index/REMOVE';
 
 /**
  * Default State
@@ -39,6 +40,10 @@ const reducer = (state = _state, action) => (
                 draft.error = action.payload;
                 break;
             }
+            case REMOVE: {
+                draft.list = draft.list.filter(blog => blog.id !== action.payload);
+                break;
+            }
             default:
                 break;
         }
@@ -54,11 +59,8 @@ export const actions = {
     setIsLoading: (payload) => createAction(SET_IS_LOADING, { payload }),
     setError: (payload) => createAction(SET_ERROR, { payload }),
     request: () => createAction(REQUEST),
+    remove: (payload) => createAction(REMOVE, { payload }),
 };
-
-/**
- * Selectors
- **/
 
 /**
  * Sagas
@@ -66,7 +68,6 @@ export const actions = {
 
 const sagas = {
     * request() {
-        console.log('request called');
         yield put(actions.setIsLoading(true));
 
         try {

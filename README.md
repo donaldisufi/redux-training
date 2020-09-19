@@ -10,5 +10,10 @@
 1. Authorized Routs (HOC)
 2. Authentication Flow
 
-
 1. Unit testing
+
+
+Exercises:
+1. Pagination
+2. Searching
+3. Edit Form

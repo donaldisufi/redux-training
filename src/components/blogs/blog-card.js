@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 
 function BlogCard(props) {
     const classes = useStyles();
-    const { title, description } = props;
+    const { id, title, description } = props;
     return (
         <>
             <Paper className={classes.paper}>
@@ -39,7 +39,7 @@ function BlogCard(props) {
                         <Button size="small" color="primary">
                             Edit
                         </Button>
-                        <Button size="small" color="primary">
+                        <Button size="small" color="primary" onClick={() => { props.deleteButtonOnClick(id); }}>
                             Delete
                         </Button>
                     </CardActions>
@@ -53,6 +53,7 @@ function BlogCard(props) {
 BlogCard.propTypes = {
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
+    deleteButtonOnClick: PropTypes.func.isRequired,
 }
 
 export default BlogCard;

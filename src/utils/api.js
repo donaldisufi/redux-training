@@ -6,14 +6,17 @@ new Server({
     },
     seeds(server) {
         server.schema.blogs.create({
+            id: 1,
             title: "Blog 01",
             description: "Blog Description",
         })
         server.schema.blogs.create({
+            id: 2,
             title: "Blog 02",
             description: "Blog Description 02",
         })
         server.schema.blogs.create({
+            id: 3,
             title: "Blog 03",
             description: "Blog Description 03 ",
         })
