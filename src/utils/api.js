@@ -13,6 +13,10 @@ new Server({
             title: "Blog 02",
             description: "Blog Description 02",
         })
+        server.schema.blogs.create({
+            title: "Blog 03",
+            description: "Blog Description 03 ",
+        })
     },
     routes() {
         this.namespace = "/api"
