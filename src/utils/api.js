@@ -34,7 +34,7 @@ new Server({
         });
 
         this.post("/blogs", (schema, request) => {
-            return schema.blogs.create(request.requestBody)
+           return schema.blogs.create(JSON.parse(request.requestBody));
         });
 
         this.del("/blogs/:id", (schema, request) => {

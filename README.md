@@ -3,8 +3,6 @@
 3. Understanding Redux, Creating several reducers
 4. Immer js
 5. Adding sagas middleware
-6. Form Creating
-7. QA
 
 
 1. Authorized Routs (HOC)
@@ -17,3 +15,7 @@ Exercises:
 1. Pagination
 2. Searching
 3. Edit Form
+
+
+1. Form Creating
+2. Form Updating

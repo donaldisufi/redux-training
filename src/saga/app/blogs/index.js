@@ -11,6 +11,7 @@ export const SET_LIST = '@app/blogs/index/SET_LIST';
 export const SET_IS_LOADING = '@app/blogs/index/SET_IS_LOADING';
 export const SET_ERROR = '@app/blogs/index/SET_ERROR';
 export const REMOVE = '@app/blogs/index/REMOVE';
+export const APPEND = '@app/blogs/index/APPEND';
 
 /**
  * Default State
@@ -44,6 +45,10 @@ const reducer = (state = _state, action) => (
                 draft.list = draft.list.filter(blog => blog.id !== action.payload);
                 break;
             }
+            case APPEND: {
+                draft.list.push(action.payload);
+                break;
+            }
             default:
                 break;
         }
@@ -60,6 +65,7 @@ export const actions = {
     setError: (payload) => createAction(SET_ERROR, { payload }),
     request: () => createAction(REQUEST),
     remove: (payload) => createAction(REMOVE, { payload }),
+    append: (payload) => createAction(APPEND, { payload }),
 };
 
 /**
