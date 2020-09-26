@@ -15,6 +15,7 @@ import {actions as blogRemoveActions, getIsLoading, getModalVisibility, getRemov
 
 import Modal from '@material-ui/core/Modal';
 import Button from "@material-ui/core/Button";
+import {getHasMore, getPage} from "../../saga/app/blogs";
 
 function getModalStyle() {
     return {
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function BlogsList() {
+function BlogsList(props) {
 
     const classes = useStyles();
     // getModalStyle is not a pure function, we roll the style only on the first render
@@ -46,6 +47,10 @@ function BlogsList() {
     const removeBlogConfirmationModalVisible = useSelector(getModalVisibility);
     const removeBlogId = useSelector(getRemoveId);
     const removeInProgress = useSelector(getIsLoading);
+
+
+    const page = useSelector(getPage);
+    const hasMoreResults = useSelector(getHasMore);
 
     useEffect(() => {
         dispatch({ type: '@app/blogs/index/REQUEST' });
@@ -65,9 +70,22 @@ function BlogsList() {
     const yesButtonOnClick = () => {
         dispatch(blogRemoveActions.request(removeBlogId))
     }
+    const goBackButtonOnClick = () => {
+        props.history.push('/')
+    }
+
+    const handleLoadMoreButtonClick = () => {
+        dispatch(blogActions.requestPage(page + 1))
+    }
 
     return (
         <>
+            <Button
+                variant="contained"
+                onClick={goBackButtonOnClick}
+            >
+                Go back
+            </Button>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={8} lg={9}>
                     <b>{list.length} blogs</b>
@@ -81,6 +99,12 @@ function BlogsList() {
                             />
                         ))
                     )}
+                    {hasMoreResults && <Button
+                        variant="contained"
+                        onClick={handleLoadMoreButtonClick}
+                    >
+                        Load more
+                    </Button>}
                 </Grid>
             </Grid>
             <Modal

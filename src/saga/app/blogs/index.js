@@ -3,15 +3,21 @@ import { takeLatest, put, call, delay } from 'redux-saga/effects';
 import createAction from '../../../utils/action-creator';
 import fetchAsync from '../../../utils/fetchPromise';
 
+const BLOGS_PER_PAGE = 2;
+
 /**
  * Constants
  */
 export const REQUEST = '@app/blogs/index/REQUEST';
+export const REQUEST_PAGE = '@app/blogs/index/REQUEST_PAGE';
 export const SET_LIST = '@app/blogs/index/SET_LIST';
 export const SET_IS_LOADING = '@app/blogs/index/SET_IS_LOADING';
 export const SET_ERROR = '@app/blogs/index/SET_ERROR';
 export const REMOVE = '@app/blogs/index/REMOVE';
 export const APPEND = '@app/blogs/index/APPEND';
+export const APPEND_LIST = '@app/blogs/index/APPEND_LIST';
+export const SET_HAS_MORE = '@app/blogs/index/SET_HAS_MORE';
+export const SET_PAGE = '@app/blogs/index/SET_PAGE';
 
 /**
  * Default State
@@ -20,6 +26,8 @@ const _state = {
     list: [],
     isLoading: false,
     error: null,
+    hasMore: false,
+    page: 1,
 }
 
 
@@ -49,6 +57,18 @@ const reducer = (state = _state, action) => (
                 draft.list.push(action.payload);
                 break;
             }
+            case APPEND_LIST: {
+                draft.list.push(...action.payload);
+                break;
+            }
+            case SET_HAS_MORE: {
+                draft.hasMore = action.payload;
+                break;
+            }
+            case SET_PAGE: {
+                draft.page = action.payload;
+                break;
+            }
             default:
                 break;
         }
@@ -64,9 +84,19 @@ export const actions = {
     setIsLoading: (payload) => createAction(SET_IS_LOADING, { payload }),
     setError: (payload) => createAction(SET_ERROR, { payload }),
     request: () => createAction(REQUEST),
+    requestPage: (payload) => createAction(REQUEST_PAGE, { payload }),
     remove: (payload) => createAction(REMOVE, { payload }),
     append: (payload) => createAction(APPEND, { payload }),
+    setHasMore: (payload) => createAction(SET_HAS_MORE, { payload }),
+    appendList: (payload) => createAction(APPEND_LIST, { payload }),
+    setPage: (payload) => createAction(SET_PAGE, { payload }),
 };
+
+/**
+ * Selectors
+ **/
+export const getPage = (state) => state.app.blogs.list.page;
+export const getHasMore = (state) => state.app.blogs.list.hasMore;
 
 /**
  * Sagas
@@ -77,10 +107,28 @@ const sagas = {
         yield put(actions.setIsLoading(true));
 
         try {
-            const response = yield call(fetchAsync,"/api/blogs");
-            yield put(actions.setList(response.blogs));
+            const response = yield call(fetchAsync,"/api/blogs/1");
+            const { blogs, hasMore } = response;
+            yield put(actions.setHasMore(hasMore))
+            yield put(actions.setList(blogs));
         } catch (e) {
            yield put(actions.setError(e.toString()));
+        }
+        finally {
+            yield put(actions.setIsLoading(false));
+        }
+    },
+    * requestPage({ payload }) {
+        yield put(actions.setIsLoading(true));
+        console.log('page being requested', payload)
+        try {
+            const response = yield call(fetchAsync,`/api/blogs/${payload}`);
+            const { blogs, hasMore } = response;
+            yield put(actions.setHasMore(hasMore));
+            yield put(actions.setPage(payload));
+            yield put(actions.appendList(blogs));
+        } catch (e) {
+            yield put(actions.setError(e.toString()));
         }
         finally {
             yield put(actions.setIsLoading(false));
@@ -90,4 +138,5 @@ const sagas = {
 
 export const watcher = function* w() {
     yield takeLatest(REQUEST, sagas.request)
+    yield takeLatest(REQUEST_PAGE, sagas.requestPage)
 }

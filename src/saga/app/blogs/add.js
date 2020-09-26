@@ -11,7 +11,6 @@ export const REQUEST = '@app/blogs/add/REQUEST';
 export const SET_IS_SUBMITTING = '@app/blogs/add/SET_IS_SUBMITTING';
 export const SET_FORM_STATUS = '@app/blogs/add/SET_FORM_STATUS';
 
-
 /**
  * Default State
  */
@@ -19,7 +18,6 @@ const _state = {
     isSubmitting: false,
     formStatus: null // { success: true }, { success: false, error: 'error message' } | null
 }
-
 
 /**
  * Reducers
@@ -62,17 +60,17 @@ const sagas = {
 
         try {
             const response = yield call(axios.post,'/api/blogs', payload);
-            yield put(actions.setFormStatus({ success: true }));
             yield put(indexActions.append(response.data.blog));
+            yield put(actions.setFormStatus({ success: true }));
         } catch (e) {
             yield put(actions.setFormStatus({ success: false, error: e.toString() }));
         }
         finally {
             yield put(actions.setIsSubmitting(false));
         }
-    }
+    },
 }
 
 export const watcher = function* w() {
-    yield takeLatest(REQUEST, sagas.request)
+    yield takeLatest(REQUEST, sagas.request);
 }
