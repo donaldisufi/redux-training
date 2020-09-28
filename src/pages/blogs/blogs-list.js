@@ -76,6 +76,8 @@ function BlogsList(props) {
 
     const handleLoadMoreButtonClick = () => {
         dispatch(blogActions.requestPage(page + 1))
+        // console.log(blogActions.requestPage(page + 1))
+        // {type: "@app/blogs/index/REQUEST_PAGE", currentPage: 2}
     }
 
     return (
@@ -94,6 +96,7 @@ function BlogsList(props) {
                     ) : (
                         list.map((blog) => (
                             <BlogCard
+                                key={blog.id}
                                 {...blog}
                                 deleteButtonOnClick={handleDeleteButtonClick}
                             />

@@ -105,7 +105,6 @@ export const getHasMore = (state) => state.app.blogs.list.hasMore;
 const sagas = {
     * request() {
         yield put(actions.setIsLoading(true));
-
         try {
             const response = yield call(fetchAsync,"/api/blogs/1");
             const { blogs, hasMore } = response;
