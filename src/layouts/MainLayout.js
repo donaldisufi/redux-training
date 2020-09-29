@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -15,7 +15,10 @@ import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { mainListItems } from './listItems';
-
+import { withRouter } from 'react-router';
+import { Input } from '@material-ui/core';
+import { actions } from '../saga/app/blogs';
+import { useDispatch } from 'react-redux';
 function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
@@ -67,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'none',
     },
     title: {
-        flexGrow: 1,
+        width: 'auto'
     },
     drawerPaper: {
         position: 'relative',
@@ -108,11 +111,30 @@ const useStyles = makeStyles((theme) => ({
     fixedHeight: {
         height: 240,
     },
-}));
+    textField: {
 
-export default function Dashboard(props) {
+        width: '25ch',
+        backgroundColor: 'white',
+        borderRadius: 10,
+        paddingLeft: 10,
+        borderBottom: '0px'
+
+    },
+    searchContainer: {
+        justifyContent: 'flex-start',
+        marginLeft: 50
+    }
+}));
+function Dashboard(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(true);
+    const [displaySearch, setDisplaySerach] = useState(false);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        checkIfShouldDisplaySearch(props.location.pathname);
+    }, [props]);
+
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -120,6 +142,18 @@ export default function Dashboard(props) {
         setOpen(false);
     };
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+
+    const checkIfShouldDisplaySearch = pathName => {
+        if (pathName === "/blogs") {
+            setDisplaySerach(true);
+            return;
+        }
+        setDisplaySerach(false);
+    }
+    const onChangeSearch = ({ target: { value } }) => {
+        dispatch(actions.requestSearch(value));
+    };
 
     return (
         <div className={classes.root}>
@@ -138,6 +172,20 @@ export default function Dashboard(props) {
                     <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                         Blogs
                     </Typography>
+
+                    {
+                        displaySearch
+                        &&
+                        <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.searchContainer}>
+                            <Input
+                                placeholder="Search Blogs ..."
+                                className={classes.textField}
+                                disableUnderline
+                                onChange={onChangeSearch}
+                            />
+                        </Typography>
+                    }
+
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -167,3 +215,5 @@ export default function Dashboard(props) {
         </div>
     );
 }
+
+export default withRouter(Dashboard);

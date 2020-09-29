@@ -19,7 +19,7 @@ function Blogs(props) {
     //         console.log(e);
     //     }
     // }, []);
-
+    console.log("props",props);
     const blogsButtonOnClick = () => {
         history.push("/blogs");
     }

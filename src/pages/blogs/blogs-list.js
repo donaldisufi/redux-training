@@ -11,10 +11,11 @@ import BlogCard from "../../components/blogs/blog-card";
  * Actions
  */
 import { actions as blogActions } from '../../saga/app/blogs/index';
-import {actions as blogRemoveActions, getIsLoading, getModalVisibility, getRemoveId} from '../../saga/app/blogs/remove';
+import { actions as blogRemoveActions, getIsLoading, getModalVisibility, getRemoveId } from '../../saga/app/blogs/remove';
 
 import Modal from '@material-ui/core/Modal';
 import Button from "@material-ui/core/Button";
+import NotFound from "../../components/common/NotFound";
 
 function getModalStyle() {
     return {
@@ -35,14 +36,15 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function BlogsList() {
+function BlogsList(props) {
+    console.log("props", props);
 
     const classes = useStyles();
     // getModalStyle is not a pure function, we roll the style only on the first render
     const [modalStyle] = React.useState(getModalStyle);
 
     const dispatch = useDispatch();
-    const { isLoading, list } = useSelector((state) => state.app.blogs.list);
+    const { isLoading, list, error } = useSelector((state) => state.app.blogs.list);
     const removeBlogConfirmationModalVisible = useSelector(getModalVisibility);
     const removeBlogId = useSelector(getRemoveId);
     const removeInProgress = useSelector(getIsLoading);
@@ -74,13 +76,19 @@ function BlogsList() {
                     {isLoading && list.length === 0 ? (
                         <CircularProgress />
                     ) : (
-                        list.map((blog) => (
-                            <BlogCard
-                                {...blog}
-                                deleteButtonOnClick={handleDeleteButtonClick}
-                            />
-                        ))
-                    )}
+                            list.length > 0
+                                ?
+                                (list.map((blog) => (
+                                    <BlogCard
+                                        {...blog}
+                                        deleteButtonOnClick={handleDeleteButtonClick}
+                                    />
+                                ))) :
+                                error ?
+                                    (<p>error</p>)
+                                    :
+                                    (<NotFound />)
+                        )}
                 </Grid>
             </Grid>
             <Modal

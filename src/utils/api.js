@@ -47,5 +47,13 @@ new Server({
             }
             return {status: false};
         });
+
+        this.patch("/blogs/edit/:id",(schema,request)=>{
+            let newBlogAttributes = JSON.parse(request.requestBody);
+            let id = request.params.id;
+            let blog = schema.blogs.find(id);
+
+            return blog.update(newBlogAttributes);
+        });
     },
 });
