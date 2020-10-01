@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -15,17 +15,6 @@ import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { mainListItems } from './listItems';
-import { withRouter } from 'react-router';
-import { Input } from '@material-ui/core';
-import { actions } from '../saga/app/blogs';
-import { useDispatch } from 'react-redux';
-import MainListItems from './listItems';
-import { useSelector, useDispatch } from 'react-redux';
-
-/**
- * Actions
- */
-import { actions as authActions } from '../saga/app/auth/index';
 
 function Copyright() {
     return (
@@ -78,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'none',
     },
     title: {
-        width: 'auto'
+        flexGrow: 1,
     },
     drawerPaper: {
         position: 'relative',
@@ -119,97 +108,13 @@ const useStyles = makeStyles((theme) => ({
     fixedHeight: {
         height: 240,
     },
-    textField: {
-
-<<<<<<< HEAD
-        width: '25ch',
-        backgroundColor: 'white',
-        borderRadius: 10,
-        paddingLeft: 10,
-        borderBottom: '0px'
-
-    },
-    searchContainer: {
-        justifyContent: 'flex-start',
-        marginLeft: 50
-    }
 }));
-function Dashboard(props) {
-=======
-export default function Dashboard(props) {
-    const dispatch = useDispatch();
 
->>>>>>> upstream/master
+export default function PublicLayout(props) {
     const classes = useStyles();
-    const [open, setOpen] = React.useState(true);
-    const dispatch = useDispatch();
-
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
-    // const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-
-<<<<<<< HEAD
-    const onChangeSearch = ({ target: { value } }) => {
-        dispatch(actions.requestSearch(value));
-    };
-    const { pathname } = props.location;
-=======
-    const handleLogoutButtonOnClick = () => {
-        dispatch(authActions.logOut());
-    }
->>>>>>> upstream/master
     return (
         <div className={classes.root}>
-            <CssBaseline />
-            <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
-                <Toolbar className={classes.toolbar}>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                        Blogs
-                    </Typography>
-
-                    {
-                        pathname === "/blogs"
-                        &&
-                        <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.searchContainer}>
-                            <Input
-                                placeholder="Search Blogs ..."
-                                className={classes.textField}
-                                disableUnderline
-                                onChange={onChangeSearch}
-                            />
-                        </Typography>
-                    }
-
-                </Toolbar>
-            </AppBar>
-            <Drawer
-                variant="permanent"
-                classes={{
-                    paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-                }}
-                open={open}
-            >
-                <div className={classes.toolbarIcon}>
-                    <IconButton onClick={handleDrawerClose}>
-                        <ChevronLeftIcon />
-                    </IconButton>
-                </div>
-                <Divider />
-                <List><MainListItems logoutOnClick={handleLogoutButtonOnClick}/></List>
-            </Drawer>
+            <h1>Public Layout</h1>
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth="lg" className={classes.container}>
@@ -222,5 +127,3 @@ export default function Dashboard(props) {
         </div>
     );
 }
-
-export default withRouter(Dashboard);

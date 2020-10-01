@@ -22,6 +22,7 @@ import {getEditModalVisibility,getErrorEditing,getIsLoadingEdit} from '../../sag
 import Modal from '@material-ui/core/Modal';
 import Button from "@material-ui/core/Button";
 import NotFound from "../../components/common/NotFound";
+import {getHasMore, getPage} from "../../saga/app/blogs";
 
 function getModalStyle() {
     return {
@@ -43,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function BlogsList(props) {
-    console.log("props", props);
 
     const classes = useStyles();
     // getModalStyle is not a pure function, we roll the style only on the first render
@@ -54,6 +54,10 @@ function BlogsList(props) {
     const removeBlogConfirmationModalVisible = useSelector(getModalVisibility);
     const removeBlogId = useSelector(getRemoveId);
     const removeInProgress = useSelector(getIsLoading);
+
+
+    const page = useSelector(getPage);
+    const hasMoreResults = useSelector(getHasMore);
 
     useEffect(() => {
         dispatch({ type: '@app/blogs/index/REQUEST' });
@@ -73,6 +77,15 @@ function BlogsList(props) {
     const yesButtonOnClick = () => {
         dispatch(blogRemoveActions.request(removeBlogId))
     }
+    const goBackButtonOnClick = () => {
+        props.history.push('/')
+    }
+
+    const handleLoadMoreButtonClick = () => {
+        dispatch(blogActions.requestPage(page + 1))
+        // console.log(blogActions.requestPage(page + 1))
+        // {type: "@app/blogs/index/REQUEST_PAGE", currentPage: 2}
+    }
 
     const editButtonClick = id => {
         dispatch(blogEditActions.toggleModalVisibility());
@@ -81,6 +94,12 @@ function BlogsList(props) {
     
     return (
         <>
+            <Button
+                variant="contained"
+                onClick={goBackButtonOnClick}
+            >
+                Go back
+            </Button>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={8} lg={9}>
                     <b>{list.length} blogs</b>
@@ -91,6 +110,7 @@ function BlogsList(props) {
                                 ?
                                 (list.map((blog) => (
                                     <BlogCard
+                                        key={blog.id}
                                         {...blog}
                                         editButtonClick={editButtonClick}
                                         deleteButtonOnClick={handleDeleteButtonClick}
@@ -101,6 +121,13 @@ function BlogsList(props) {
                                     :
                                     (<NotFound />)
                         )}
+                       
+                    {hasMoreResults && <Button
+                        variant="contained"
+                        onClick={handleLoadMoreButtonClick}
+                    >
+                        Load more
+                    </Button>}
                 </Grid>
             </Grid>
             <Modal
