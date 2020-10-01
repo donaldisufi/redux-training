@@ -1,14 +1,14 @@
 import produce from 'immer';
 import createAction from "../../../utils/action-creator";
 import { call, put, takeLatest, select } from "redux-saga/effects";
-import axios from 'axios';
+// import axios from 'axios';
 import { actions as indexActions } from './index';
 import fetchAsync from '../../../utils/fetchPromise';
 
 /**
  * Constants
  */
-export const EDIT_BLOG = '@app/blogs/edit/EDIT_BLOG';
+export const EDIT_BLOG_REQUEST = '@app/blogs/edit/EDIT_BLOG_REQUEST';
 export const SET_IS_LOADING_EDIT = '@app/blogs/edit/SET_IS_LOADING_EDIT';
 export const SET_ERROR_EDIT = '@app/blogs/edit/SET_ERROR_EDIT';
 export const TOGGLE_MODAL_VISIBILITY_EDIT = '@app/blogs/edit/TOGGLE_MODAL_VISIBILITY_EDIT';
@@ -67,7 +67,7 @@ export const getBlogId = state => state.app.blogs.edit.blogId;
  * Action Creators
  */
 export const actions = {
-    editBlog: (payload) => createAction(EDIT_BLOG,payload),
+    editBlog: (payload) => createAction(EDIT_BLOG_REQUEST, payload),
     setLoading: (payload) => createAction(SET_IS_LOADING_EDIT, { payload }),
     setErrorEdtting: (payload) => createAction(SET_ERROR_EDIT, { payload }),
     toggleModalVisibility: () => createAction(TOGGLE_MODAL_VISIBILITY_EDIT),
@@ -82,16 +82,20 @@ const sagas = {
     * editBlog({ payload }) {
         yield put(actions.setLoading(true));
         const id = yield select(getBlogId);
-        
+
         try {
-            const response = yield call(fetchAsync, `/api/blogs/edit/${id}`,payload);
-            console.log("response",response);
+            const response = yield call(fetchAsync, `/api/blogs/${id}`, payload);
+            indexActions.editBlog(response);
+
         } catch (error) {
             yield put(actions.setErrorEdtting(error));
+        } 
+        finally {
+           yield put(actions.setLoading(false));
         }
     }
 }
 
 export const watcher = function* w() {
-    yield takeLatest(EDIT_BLOG, sagas.editBlog)
+    yield takeLatest(EDIT_BLOG_REQUEST, sagas.editBlog)
 }

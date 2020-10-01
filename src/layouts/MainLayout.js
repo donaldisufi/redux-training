@@ -128,12 +128,7 @@ const useStyles = makeStyles((theme) => ({
 function Dashboard(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(true);
-    const [displaySearch, setDisplaySerach] = useState(false);
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        checkIfShouldDisplaySearch(props.location.pathname);
-    }, [props]);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -141,20 +136,12 @@ function Dashboard(props) {
     const handleDrawerClose = () => {
         setOpen(false);
     };
-    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+    // const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-
-    const checkIfShouldDisplaySearch = pathName => {
-        if (pathName === "/blogs") {
-            setDisplaySerach(true);
-            return;
-        }
-        setDisplaySerach(false);
-    }
     const onChangeSearch = ({ target: { value } }) => {
         dispatch(actions.requestSearch(value));
     };
-
+    const { pathname } = props.location;
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -174,7 +161,7 @@ function Dashboard(props) {
                     </Typography>
 
                     {
-                        displaySearch
+                        pathname === "/blogs"
                         &&
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.searchContainer}>
                             <Input

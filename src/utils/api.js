@@ -48,7 +48,7 @@ new Server({
             return {status: false};
         });
 
-        this.patch("/blogs/edit/:id",(schema,request)=>{
+        this.patch("/blogs/:id",(schema,request)=>{
             let newBlogAttributes = JSON.parse(request.requestBody);
             let id = request.params.id;
             let blog = schema.blogs.find(id);

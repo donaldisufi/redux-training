@@ -12,6 +12,12 @@ import BlogCard from "../../components/blogs/blog-card";
  */
 import { actions as blogActions } from '../../saga/app/blogs/index';
 import { actions as blogRemoveActions, getIsLoading, getModalVisibility, getRemoveId } from '../../saga/app/blogs/remove';
+import {actions as blogEditActions} from '../../saga/app/blogs/edit';
+
+/**
+ * Selectors
+ */
+import {getEditModalVisibility,getErrorEditing,getIsLoadingEdit} from '../../saga/app/blogs/edit';
 
 import Modal from '@material-ui/core/Modal';
 import Button from "@material-ui/core/Button";
@@ -68,6 +74,11 @@ function BlogsList(props) {
         dispatch(blogRemoveActions.request(removeBlogId))
     }
 
+    const editButtonClick = id => {
+        dispatch(blogEditActions.toggleModalVisibility());
+        dispatch(blogEditActions.setBlogId(id));
+    }
+    
     return (
         <>
             <Grid container spacing={3}>
@@ -81,6 +92,7 @@ function BlogsList(props) {
                                 (list.map((blog) => (
                                     <BlogCard
                                         {...blog}
+                                        editButtonClick={editButtonClick}
                                         deleteButtonOnClick={handleDeleteButtonClick}
                                     />
                                 ))) :
@@ -113,6 +125,28 @@ function BlogsList(props) {
                     </div>
                 </>
             </Modal>
+            {/* <Modal
+                open={removeBlogConfirmationModalVisible}
+                onClose={handleCloseDeleteConfirmationModal}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+            >
+                <>
+                    <div style={modalStyle} className={classes.paper}>
+                        <h2 id="simple-modal-title">Confirm</h2>
+                        <p id="simple-modal-description">
+                            Are you sure you want to delete this blog item?
+                        </p>
+                        <Button size="small" color="primary" onClick={handleCloseDeleteConfirmationModal}>
+                            Cancel
+                        </Button>
+                        <Button size="small" color="secondary" onClick={yesButtonOnClick}>
+                            Yes
+                        </Button>
+                        {removeInProgress && <b>Removing...</b>}
+                    </div>
+                </>
+            </Modal> */}
         </>
     )
 }

@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { takeLatest, put, call, delay, } from 'redux-saga/effects';
+import { takeLatest, put, call, delay,select } from 'redux-saga/effects';
 import createAction from '../../../utils/action-creator';
 import fetchAsync from '../../../utils/fetchPromise';
 
@@ -12,7 +12,7 @@ export const SET_IS_LOADING = '@app/blogs/index/SET_IS_LOADING';
 export const SET_ERROR = '@app/blogs/index/SET_ERROR';
 export const REMOVE = '@app/blogs/index/REMOVE';
 export const SEARCH = '@app/blogs/index/SEARCH';
-
+export const EDIT_BLOG = '@app/blogs/index/EDIT_BLOG';
 
 /**
  * Default State
@@ -21,8 +21,8 @@ const _state = {
     list: [],
     isLoading: false,
     error: null,
-    isLoadingEdit:false,
-    errorEdit:null
+    isLoadingEdit: false,
+    errorEdit: null
 }
 
 /**
@@ -47,13 +47,18 @@ const reducer = (state = _state, action) => (
                 draft.list = draft.list.filter(blog => blog.id !== action.payload);
                 break;
             }
-        
+
             default:
                 break;
         }
     })
 );
 export default reducer;
+
+/**
+ * Selectors 
+ */
+const getAllBlogs = state => state.app.blogs.list;
 
 /**
  * Action Creators
@@ -64,13 +69,14 @@ export const actions = {
     setError: (payload) => createAction(SET_ERROR, { payload }),
     request: () => createAction(REQUEST),
     remove: (payload) => createAction(REMOVE, { payload }),
-    requestSearch: (payload) => createAction(SEARCH, { payload })
+    requestSearch: (payload) => createAction(SEARCH, { payload }),
+    editBlog:(payload) => createAction(EDIT_BLOG,{payload}),
+
 };
 
 /**
  * Sagas
  **/
-
 const sagas = {
     * request() {
         yield put(actions.setIsLoading(true));
@@ -98,12 +104,18 @@ const sagas = {
             yield put(actions.setIsLoading(false));
         }
     },
-    editBlog({payload}){
-        
+    * editBlog({ payload }) {
+        try {
+            const blogList = select(getAllBlogs).map(item => item.id===payload.id?payload:item);
+            yield put(actions.setList(blogList));
+        } catch (error) {
+            console.log("error ",error);
+        }
     }
 }
 
 export const watcher = function* w() {
     yield takeLatest(REQUEST, sagas.request);
     yield takeLatest(SEARCH, sagas.requestSearch);
+    yield takeLatest(EDIT_BLOG,sagas.editBlog);
 }
