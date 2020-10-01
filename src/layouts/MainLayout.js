@@ -18,9 +18,8 @@ import { mainListItems } from './listItems';
 import { withRouter } from 'react-router';
 import { Input } from '@material-ui/core';
 import { actions } from '../saga/app/blogs';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import MainListItems from './listItems';
-import { useSelector, useDispatch } from 'react-redux';
 
 /**
  * Actions
@@ -120,8 +119,6 @@ const useStyles = makeStyles((theme) => ({
         height: 240,
     },
     textField: {
-
-<<<<<<< HEAD
         width: '25ch',
         backgroundColor: 'white',
         borderRadius: 10,
@@ -134,12 +131,8 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 50
     }
 }));
-function Dashboard(props) {
-=======
-export default function Dashboard(props) {
-    const dispatch = useDispatch();
 
->>>>>>> upstream/master
+function Dashboard(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(true);
     const dispatch = useDispatch();
@@ -150,18 +143,15 @@ export default function Dashboard(props) {
     const handleDrawerClose = () => {
         setOpen(false);
     };
-    // const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-<<<<<<< HEAD
     const onChangeSearch = ({ target: { value } }) => {
+        debugger;
         dispatch(actions.requestSearch(value));
     };
     const { pathname } = props.location;
-=======
     const handleLogoutButtonOnClick = () => {
         dispatch(authActions.logOut());
     }
->>>>>>> upstream/master
     return (
         <div className={classes.root}>
             <CssBaseline />
